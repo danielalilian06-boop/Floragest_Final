@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Administrador - FloraGest</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+    
+    /* Menú superior */
+    #menuUsuario {
+      background-color: var(--color-primary);
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    #menuUsuario button {
+      background-color: var(--color-danger);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    h2, h3 { color: var(--color-primary); }
+
+    /* Formularios */
+    form {
+      margin-bottom: 30px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    form input, form button {
+      padding: 8px 12px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    form button {
+      background-color: var(--color-success);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #2e8b57;
+    }
+
+    /* Tablas */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    th { background-color: var(--color-primary); color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    tr:hover { background-color: #f5f5f5; }
+
+    button { cursor: pointer; }
+    button.delete { background-color: var(--color-danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; }
+    button.delete:hover { background-color: #c0392b; }
+  </style>
+</head>
+<body>
+
+  <!-- Menú -->
+  <div id="menuUsuario">
+    <span>👑 Administrador: {{ usuario }}</span>
+    <a href="/logout"><button>Cerrar sesión</button></a>
+  </div>
+
+  <h2>Panel de Administración</h2>
+  <p>Gestiona flores disponibles.</p>
+
+  <!-- Agregar nueva flor -->
+  <h3>Agregar nueva flor</h3>
+  <form id="formFlor">
+    <input type="text" id="nombreFlor" placeholder="Nombre de la flor" required>
+    <input type="number" id="precioFlor" placeholder="Precio" required min="1">
+    <input type="text" id="estacionFlor" placeholder="Temporada (Primavera, Verano, Otoño, Invierno)" required>
+    <button type="submit">Agregar Flor</button>
+  </form>
+
+  <!-- Tabla de flores existentes -->
+  <h3>Flores existentes</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Flor</th>
+        <th>Precio</th>
+        <th>Temporada</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaFlores">
+      {% for flor in flores %}
+      <tr>
+        <td>{{ flor.nombre }}</td>
+        <td>${{ flor.precio }}</td>
+        <td>{{ flor.estacion }}</td>
+        <td>
+          <button class="delete" onclick="eliminarFlor('{{ flor.nombre }}')">❌ Eliminar</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Scripts -->
+  <script>
+    // Agregar nueva flor
+    document.getElementById("formFlor").addEventListener("submit", async e => {
+      e.preventDefault();
+      const nombre = document.getElementById("nombreFlor").value;
+      const precio = parseFloat(document.getElementById("precioFlor").value);
+      const estacion = document.getElementById("estacionFlor").value;
+
+      const res = await fetch("/api/flores", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ nombre, precio, estacion })
+      });
+      const data = await res.json();
+      alert(data.mensaje);
+      if(res.ok) location.reload();
+    });
+
+    // Eliminar flor
+    async function eliminarFlor(nombre) {
+      if(!confirm(`¿Seguro que quieres eliminar "${nombre}"?`)) return;
+      const res = await fetch("/api/flores/" + encodeURIComponent(nombre), {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      alert(data.mensaje);
+      if(res.ok) location.reload();
+    }
+  </script>
+
+</body>
+</html>

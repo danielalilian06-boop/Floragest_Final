@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Soporte - FloraGest</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    form {
+      max-width: 450px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    textarea {
+      resize: none;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1em;
+    }
+    h2, h3 {
+      text-align: center;
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div id="menuUsuario">
+    <span>💬 Soporte al Cliente: {{ usuario }}</span>
+    <a href="/panel_cliente"><button>Volver</button></a>
+  </div>
+
+  <h2>Centro de Soporte</h2>
+  <p style="text-align:center;">Envíanos tus quejas, dudas o sugerencias.</p>
+
+  <form id="formSoporte">
+    <textarea id="mensaje" placeholder="Describe tu problema o comentario..." required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    document.getElementById("formSoporte").addEventListener("submit", e => {
+      e.preventDefault();
+      alert("Gracias por tu mensaje 💐. Nuestro equipo lo revisará pronto.");
+      mensaje.value = "";
+    });
+  </script>
+</body>
+</html>

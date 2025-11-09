@@ -1,0 +1,241 @@
+/* Nuevo styles.css - Diseño con Fondo de Imagen y Encabezado Centrado */
+
+/* --- Variables y Reset --- */
+:root {
+    --color-primary: #3d5a80;   /* Azul Marino Suave (Profesional) */
+    --color-secondary: #98c1d9; /* Azul Cielo (Toque de Color) */
+    --color-accent: #e0fbfc;    /* Menta Muy Pálido (Fondo de Elementos) */
+    --color-background-fallback: #fcfcfc; /* Fondo de respaldo si la imagen falla */
+    --color-text: #293241;      /* Gris Oscuro (Texto) */
+    --color-success: #38b000;   /* Verde para acciones positivas */
+    --color-danger: #e63946;    /* Rojo para eliminar */
+    --font-stack: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-stack);
+    background-color: var(--color-background-fallback); /* Fondo de respaldo */
+    color: var(--color-text);
+    min-height: 100vh;
+    line-height: 1.6;
+
+    /* --- Fondo de Imagen --- */
+    background-image: url('/static/fondoflor.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    /* Agregamos un overlay sutil para que el texto sea legible */
+    position: relative;
+    z-index: 1;
+}
+
+/* Pseudo-elemento para el overlay de color sobre la imagen */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7); /* Blanco con 70% de opacidad */
+    z-index: -1;
+}
+
+/* --- Títulos y Encabezado Centrado --- */
+.header-container {
+    text-align: center; /* Centra el texto H1 y P */
+    margin-bottom: 40px;
+    padding-top: 40px;
+}
+
+h1 {
+    color: var(--color-primary);
+    font-size: 3em;
+    font-weight: bold; /* Asegurando negrita */
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3 {
+    color: var(--color-text);
+    font-size: 1.4em;
+    /* Centra el bloque y el texto del título: */
+    margin: 30px auto 15px auto;
+    text-align: center;
+    font-weight: bold; /* ¡Negrita para h2 y h3! */
+    
+    max-width: 600px;
+    border-bottom: 2px solid var(--color-secondary);
+    padding-bottom: 8px;
+}
+
+p {
+    color: #777;
+    font-size: 1.1em;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+    text-align: center;
+}
+
+/* --- Contenedores y Formularios (Diseño de Tarjeta) --- */
+#loginForm, #registerForm, #formFlor, #formCliente, #formVenta {
+    max-width: 450px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid #f0f0f0;
+}
+
+/* Campos de entrada */
+input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background-color: var(--color-accent);
+}
+
+input:focus {
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(152, 193, 217, 0.4);
+    background-color: white;
+    outline: none;
+}
+
+/* Botones */
+button {
+    padding: 12px 20px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+button:hover {
+    background-color: var(--color-secondary);
+    transform: translateY(-1px);
+}
+
+/* Menú superior */
+#menuUsuario {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 20px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#menuUsuario button {
+  background-color: var(--color-danger);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#menuUsuario button:hover {
+  background-color: #c0392b;
+}
+
+body {
+  padding-top: 60px;
+}
+
+/* --- Estilo de Tabla (flores.html) --- */
+table {
+    width: 90%;
+    margin: 40px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    border-radius: 12px;
+    background-color: white;
+}
+
+thead th {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 15px 15px;
+    text-align: center;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+tbody tr {
+    transition: background-color 0.2s;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--color-accent);
+}
+
+tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    color: var(--color-text);
+}
+
+/* Botones de acción en la tabla */
+table button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    margin: 0 5px;
+}
+
+/* Botón de eliminar */
+table button[onclick^="eliminarFlor"] {
+    background-color: var(--color-danger);
+    width: 40px;
+}
+table button[onclick^="eliminarFlor"]:hover {
+    background-color: #c0392b;
+}
+
+/* Iconos y mejoras para la estética */
+#formFlor button {
+    background-color: var(--color-success);
+}
+#formFlor button:hover {
+    background-color: #2e8b57;
+}
+
+td:first-child {
+    font-weight: bold;
+    color: var(--color-primary);
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Cliente - FloraGest</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Contenedor centrado para tabla + recomendaciones */
+    #contenido {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    /* Tabla y botones de agregar */
+    table {
+      max-width: 400px;
+      margin: 10px;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+    thead th {
+      background-color: var(--color-primary);
+      color: white;
+      padding: 12px;
+      text-align: center;
+    }
+    tbody tr:nth-child(even) {
+      background-color: var(--color-accent);
+    }
+    tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+    td {
+      padding: 12px;
+      text-align: center;
+    }
+    button.agregar {
+      background-color: var(--color-success);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button.agregar:hover {
+      background-color: #2e8b57;
+    }
+
+    /* Resaltar recomendaciones */
+    .recomendado {
+      background-color: #fff3b0 !important;
+      font-weight: bold;
+    }
+
+    /* Menú superior */
+    #menuUsuario {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--color-primary);
+      color: white;
+      padding: 10px 20px;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    #menuUsuario button {
+      background-color: var(--color-danger);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+    #menuUsuario button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Buscador y select de temporada */
+    #buscadorDiv {
+      max-width: 850px;
+      margin: 100px auto 20px auto;
+      text-align: center;
+    }
+    #buscadorDiv input, #buscadorDiv select {
+      padding: 10px 12px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      margin-right: 10px;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--color-primary);
+    }
+
+    /* Recomendaciones de temporada */
+    #recomendaciones {
+      max-width: 400px;
+      margin: 10px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    #recomendaciones h3 {
+      color: var(--color-primary);
+      text-align: center;
+    }
+    #recomendaciones p {
+      margin: 10px 0;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div id="menuUsuario">
+    <span>🌸 Cliente: {{ usuario }}</span>
+    <div>
+      <a href="/carrito"><button>🛒 Carrito</button></a>
+      <a href="/soporte"><button>💬 Soporte</button></a>
+      <a href="/logout"><button>Cerrar sesión</button></a>
+    </div>
+  </div>
+
+  <!-- Buscador y selección de temporada -->
+  <div id="buscadorDiv">
+    <input type="text" id="buscador" placeholder="🔍 Busca tus flores aquí...">
+    <select id="temporadaSelect">
+      <option value="">Todas las temporadas</option>
+      <option value="Primavera">Primavera</option>
+      <option value="Verano">Verano</option>
+      <option value="Otoño">Otoño</option>
+      <option value="Invierno">Invierno</option>
+    </select>
+  </div>
+
+  <h2>Flores disponibles esta temporada</h2>
+
+  <div id="contenido">
+    <!-- Tabla de flores -->
+    <table>
+      <thead>
+        <tr>
+          <th>Flor</th>
+          <th>Precio</th>
+          <th>Agregar</th>
+        </tr>
+      </thead>
+      <tbody id="tablaFlores">
+        {% for flor in flores %}
+        <tr data-estacion="{{ flor.estacion }}">
+          <td>{{ flor.nombre }}</td>
+          <td>${{ flor.precio }}</td>
+          <td><button class="agregar" onclick="agregarCarrito('{{ flor.nombre }}', '{{ flor.precio }}')">🛒</button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Recomendaciones de la temporada -->
+    <div id="recomendaciones">
+      <h3>Flores recomendadas</h3>
+      <div id="listaRecomendadas">
+        {% for estacion, flores_estacion in recomendaciones.items() %}
+          <p><strong>{{ estacion }}:</strong> {{ flores_estacion|join(", ") }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+// Guardamos todas las filas originales para poder filtrarlas varias veces
+const filasOriginales = Array.from(document.querySelectorAll("#tablaFlores tr"));
+
+function agregarCarrito(nombre, precio) {
+  carrito.push({ nombre, precio });
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  alert(nombre + " fue agregada al carrito 🌸");
+}
+
+function filtrarFlores() {
+  const filtro = document.getElementById("buscador").value.toLowerCase();
+  const temporada = document.getElementById("temporadaSelect").value;
+  const tbody = document.getElementById("tablaFlores");
+  const listaRecomendadas = document.getElementById("listaRecomendadas");
+
+  // Flores recomendadas de la temporada
+  let floresRecomendadas = [];
+  if (temporada) {
+    const p = Array.from(listaRecomendadas.querySelectorAll("p"))
+                   .find(p => p.querySelector("strong").textContent === temporada + ":");
+    if (p) {
+      floresRecomendadas = p.textContent.replace(temporada + ":","")
+                                       .split(",")
+                                       .map(f => f.trim().toLowerCase());
+    }
+  }
+
+  // Limpiar tbody
+  tbody.innerHTML = "";
+
+  // Filtrar y mostrar filas
+  let visibles = filasOriginales.filter(f => {
+    const nombre = f.cells[0].textContent.toLowerCase();
+    const estacion = f.getAttribute("data-estacion");
+    const coincideNombre = nombre.includes(filtro);
+    const coincideTemporada = !temporada || estacion === temporada;
+
+    if (floresRecomendadas.includes(nombre)) {
+      f.classList.add("recomendado");
+    } else {
+      f.classList.remove("recomendado");
+    }
+
+    return coincideNombre && coincideTemporada;
+  });
+
+  // Ordenar: primero recomendadas
+  visibles.sort((a, b) => {
+    const aRec = a.classList.contains("recomendado") ? -1 : 1;
+    const bRec = b.classList.contains("recomendado") ? -1 : 1;
+    return aRec - bRec;
+  });
+
+  // Agregar filas filtradas al tbody
+  visibles.forEach(f => tbody.appendChild(f));
+
+  // Mostrar solo recomendaciones de la temporada seleccionada
+  const recomendaciones = document.querySelectorAll("#listaRecomendadas p");
+  recomendaciones.forEach(p => {
+    if (!temporada || p.querySelector("strong").textContent === temporada + ":") {
+      p.style.display = "";
+    } else {
+      p.style.display = "none";
+    }
+  });
+}
+
+// Eventos
+document.getElementById("temporadaSelect").addEventListener("change", filtrarFlores);
+document.getElementById("buscador").addEventListener("input", filtrarFlores);
+window.addEventListener("load", filtrarFlores);
+</script>
+
+</body>
+</html>

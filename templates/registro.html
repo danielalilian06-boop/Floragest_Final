@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro - FloraGest</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="header-container">
+    <h1>Crear cuenta en FloraGest</h1>
+    <p>Regístrate como cliente o administrador</p>
+  </div>
+
+  <h2>Registro</h2>
+  <form id="registerForm">
+    <input type="text" id="username" placeholder="Usuario" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <select id="tipo" required>
+      <option value="">Selecciona tipo de usuario</option>
+      <option value="cliente">Cliente</option>
+      <option value="admin">Administrador</option>
+    </select>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p>¿Ya tienes cuenta? <a href="/">Inicia sesión aquí</a></p>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const res = await fetch("/api/registro", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value,
+          tipo: tipo.value
+        })
+      });
+      const data = await res.json();
+      alert(data.mensaje);
+      if (res.ok) window.location.href = "/";
+    });
+  </script>
+</body>
+</html>

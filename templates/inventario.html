@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario - FloraGest</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body style="background-image: url('/static/fondoflor.jpg');">
+  <div class="menu">
+    <h2>📊 Inventario</h2>
+    <div>
+      <a href="/panel_admin">🏠 Inicio</a>
+      <a href="/logout">🚪 Cerrar sesión</a>
+    </div>
+  </div>
+
+  <div class="contenedor">
+    <h1>Inventario con precio estacional</h1>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Nombre</th><th>Color</th><th>Stock</th><th>Precio</th><th>Precio Estacional</th></tr>
+      </thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
+
+  <script>
+    async function cargarInventario() {
+      const res = await fetch('/api/reportes/inventario');
+      const data = await res.json();
+      const tbody = document.getElementById('tabla');
+      tbody.innerHTML = '';
+      data.forEach(f => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${f.id}</td>
+            <td>${f.nombre}</td>
+            <td>${f.color}</td>
+            <td>${f.stock}</td>
+            <td>$${f.precio}</td>
+            <td>$${f.precio_estacional}</td>
+          </tr>`;
+      });
+    }
+
+    cargarInventario();
+  </script>
+</body>
+</html>

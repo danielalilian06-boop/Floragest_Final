@@ -1,0 +1,11 @@
+[
+    {"nombre": "Rosa roja", "precio": 25, "estacion": "Primavera"},
+    {"nombre": "Tulipán", "precio": 30, "estacion": "Primavera"},
+    {"nombre": "Girasol", "precio": 20, "estacion": "Verano"},
+    {"nombre": "Lirio", "precio": 28, "estacion": "Verano"},
+    {"nombre": "Crisantemo", "precio": 22, "estacion": "Otoño"},
+    {"nombre": "Jacinto", "precio": 18, "estacion": "Invierno"},
+    {"nombre": "Amarilis", "precio": 24, "estacion": "Invierno"},
+    {"nombre": "Hibisco", "precio": 26, "estacion": "Verano"},
+    {"nombre": "Dalia", "precio": 23, "estacion": "Otoño"}
+]

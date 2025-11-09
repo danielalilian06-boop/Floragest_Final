@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrito - FloraGest</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    #lista, #ticket {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #lista ul, #ticket ul {
+      list-style: none;
+      padding: 0;
+    }
+    #lista li, #ticket li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    #formCompra {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    button {
+      cursor: pointer;
+    }
+    button#volver {
+      margin-top: 15px;
+      background-color: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    button#volver:hover {
+      background-color: var(--color-secondary);
+    }
+    h2, h3 {
+      text-align: center;
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div id="menuUsuario">
+    <span>🛒 Carrito de {{ usuario }}</span>
+    <a href="/panel_cliente"><button>Volver</button></a>
+  </div>
+
+  <h2>Resumen de tu compra</h2>
+  <div id="lista"></div>
+
+  <h3>Datos de entrega</h3>
+  <form id="formCompra">
+    <input type="text" id="direccion" placeholder="Dirección de entrega" required>
+    <select id="pago" required>
+      <option value="">Selecciona forma de pago</option>
+      <option value="Tarjeta">Tarjeta</option>
+      <option value="Efectivo">Efectivo</option>
+      <option value="Transferencia">Transferencia</option>
+    </select>
+    <button type="submit">Finalizar compra</button>
+  </form>
+
+  <script>
+    const listaDiv = document.getElementById("lista");
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    if (carrito.length === 0) {
+      listaDiv.innerHTML = "<p style='text-align:center; color:#555;'>Tu carrito está vacío 🌿</p>";
+    } else {
+      listaDiv.innerHTML = "<ul>" + carrito.map(i => `<li><span>${i.nombre}</span> <span>$${i.precio}</span></li>`).join('') + "</ul>";
+    }
+
+    document.getElementById("formCompra").addEventListener("submit", async e => {
+      e.preventDefault();
+      const res = await fetch("/api/compra", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          carrito,
+          direccion: direccion.value,
+          pago: pago.value
+        })
+      });
+      const data = await res.json();
+
+      const ticket = data.ticket;
+      const ticketHTML = `
+        <div id="ticket">
+          <h3>🧾 Ticket de Compra</h3>
+          <p><strong>Cliente:</strong> ${ticket.usuario}</p>
+          <p><strong>Fecha:</strong> ${ticket.fecha}</p>
+          <p><strong>Dirección:</strong> ${ticket.direccion}</p>
+          <p><strong>Forma de pago:</strong> ${ticket.pago}</p>
+          <h4>Productos:</h4>
+          <ul>
+            ${ticket.items.map(i => `<li>${i.nombre} - $${i.precio}</li>`).join('')}
+          </ul>
+          <button id="volver" onclick="window.location.href='/panel_cliente'">🌸 Volver al menú de flores</button>
+        </div>
+      `;
+      document.body.innerHTML = ticketHTML;
+      localStorage.removeItem("carrito");
+    });
+  </script>
+</body>
+</html>

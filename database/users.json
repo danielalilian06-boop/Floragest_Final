@@ -1,3 +1,12 @@
 [
-    
+    {
+        "username": "lili",
+        "password": "Lilian#05",
+        "tipo": "cliente"
+    },
+    {
+        "username": "Lilian",
+        "password": "lili0506",
+        "tipo": "admin"
+    }
 ]
